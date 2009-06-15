@@ -24,6 +24,8 @@ module Bolt
         $".delete(filename)
         $".delete(File.join(Dir.pwd, filename))
         
+=begin
+        # FIXME: This does not work well against a real project.
         klassname = filename.sub('app/controllers/', '').sub('app/models/', '').sub('lib/', '')
         test_class = klassname.sub('.rb', '').gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
         root_klass = test_class.split('::').first
@@ -32,6 +34,7 @@ module Bolt
         # this is required to rebuild classes before test run
         # one limitation - Spec/Test cannot be reloaded or it will crash
         Object.send(:remove_const, root_klass) unless root_klass == 'Spec' or root_klass == 'Test'
+=end
         
         if filename.include?('app/controllers') or filename.include?('app/models') or filename.include?('lib/')
           begin
