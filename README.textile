@@ -1,0 +1,24 @@
+h1. Bolt - fast autotest alternative
+
+Welcome to Bolt!
+
+Bolt is a merge of several gems aimed at producing a fast, stable and easy to use version autotest.
+
+What's the main difference? First of all, it does not use rakes for running test. Instead, it loads the environment and runs the tests within the main process instantly, reloading the changed files only.
+
+When working with autotest, I was frustrated by the delay of the environment being loaded with every test run. And when trying to use mislav-rspactor it turned out it does not work with Mac OS X 10.4 (Tiger). So I decided to go ahead and make my own gem which would take the best elements of all these gems and work on my machine.
+
+This is still in experimental phase, so all feedback is appreciated.
+
+It takes solutions from several gems:
+
+*  *mislav-rspactor* - inspiration, structure and growl notifier
+*  *autotest* - obviously. Whole concept, parts of generic listener
+*  *Roman2K-rails_test_serving* - concept of running tests with preloaded environment, elements of test::unit runner
+
+h1. Copyright
+
+* *autotest* - ZenTest
+* *rails-test-serving* - Roman2K
+* *rspactor* - Mislav Marohnić, Andreas Wolff, Pelle Braendgaard
+* Icons by DryIcons http://dryicons.com
