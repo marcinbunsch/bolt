@@ -46,7 +46,7 @@ module Bolt
     def handle(updated_files)
       # notifier.spotted(updated_files.first)
       # send them to mapper
-      
+      Runners.files = updated_files
       runner.handle(updated_files.first)
       # run appropriate tests in runner
     end

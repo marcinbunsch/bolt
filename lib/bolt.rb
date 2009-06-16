@@ -22,6 +22,16 @@ module Bolt
   # Wrapper for specific runners
   #
   module Runners
+    @@noticed_files = []
+    
+    def self.files=(arr)
+      @@noticed_files = arr
+    end
+    
+    def self.files
+      @@noticed_files
+    end
+    
     autoload :TestUnit, 'bolt/runners/test_unit'
     autoload :RSpec, 'bolt/runners/rspec'
   end
