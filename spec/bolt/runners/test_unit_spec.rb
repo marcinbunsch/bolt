@@ -40,8 +40,11 @@ describe Bolt::Runners::TestUnit do
   end
   
   it 'should return no results if file is not present' do
+     b = StringIO.new
+      $stdout, old = b, $stdout
     @runner.stub('file_verified?').and_return(false)
     @runner.translate('lib/testing/test.rb').should == []
+    $stdout = old
   end
   
 end

@@ -17,7 +17,7 @@ module Bolt
     def runner
       return selected if selected
       
-      if Bolt['runner']
+      if Bolt['runner'] and ['test_unit', 'rspec'].include?(Bolt['runner'])
         self.selected= Bolt::Runners::TestUnit.new if Bolt['runner'] == 'test_unit'
         self.selected= Bolt::Runners::RSpec.new if Bolt['runner'] == 'rspec'
         $stdout.puts "** Using #{selected.class} based on 'runner' setting in .bolt file \n"

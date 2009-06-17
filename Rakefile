@@ -1,74 +1,54 @@
-# This Rakefile has been copied from mislav/rspactor
-# Mislav, you rock, did I tell you this already? :)
+require 'rubygems'
+require 'rake'
 
-task :default => :spec
-
-desc "starts Bolt"
-task :spec do
-  system "ruby -Ilib bin/bolt"
-end
-
-desc "generates .gemspec file"
-task :gemspec => "version:read" do
-  spec = Gem::Specification.new do |gem|
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
     gem.name = "bolt"
-    gem.summary = "Bolt is a merge of autotest and mislav/rspactor to produce a lightning fast, configurable and simple to set up autotest clone"
+    gem.summary = %q{Bolt is a merge of autotest, mislav/rspactor and rails_server_testing to produce a lightning fast, configurable and simple to set up autotest clone}
+    gem.authors = ["Marcin Bunsch"]
     gem.email = "marcin@applicake.com"
     gem.homepage = "http://github.com/marcinbunsch/bolt"
-    gem.authors = ["Marcin Bunsch", "Mislav Marohnić"]
-    gem.has_rdoc = false
-    
-    gem.version = GEM_VERSION
-    gem.files = FileList['.bolt.sample', 'Rakefile', '{bin,lib,images,spec}/**/*', 'README*', 'LICENSE*']
     gem.executables = Dir['bin/*'].map { |f| File.basename(f) }
+    gem.files = FileList['.bolt.sample', 'Rakefile', '{bin,lib,images,spec}/**/*', 'README*', 'LICENSE*']
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
-  
-  spec_string = spec.to_ruby
-  
-  begin
-    Thread.new { eval("$SAFE = 3\n#{spec_string}", binding) }.join 
-  rescue
-    abort "unsafe gemspec: #{$!}"
+
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+end
+
+require 'spec/rake/spectask'
+Spec::Rake::SpecTask.new(:spec) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.spec_files = FileList['spec/**/*_spec.rb']
+end
+
+Spec::Rake::SpecTask.new(:rcov) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
+end
+
+desc 'Run the gem locally'
+task :run do
+  system('ruby -I lib bin/bolt')
+end
+
+task :default => :run
+
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  if File.exist?('VERSION.yml')
+    config = YAML.load(File.read('VERSION.yml'))
+    version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
   else
-    File.open("#{spec.name}.gemspec", 'w') { |file| file.write spec_string }
+    version = ""
   end
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "bolt #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-desc "bump the version up"
-task :bump => ["version:bump", :gemspec]
-
-desc "reinstall the gem locally"
-task :reinstall do
-  GEM_VERSION = File.read("VERSION")
-  system('sudo gem uninstall bolt')
-  system("gem build bolt.gemspec")
-  system("sudo gem install bolt-#{GEM_VERSION}.gem")
-end
-
-namespace :version do
-  task :read do
-    unless defined? GEM_VERSION
-      if File.exists?('VERSION')
-        GEM_VERSION = File.read("VERSION")
-      else
-        GEM_VERSION = '0.0.1'
-      end
-    end
-  end
-  
-  desc "bump the version up"
-  task :bump => :read do
-    if ENV['VERSION']
-      GEM_VERSION.replace ENV['VERSION']
-    else
-      GEM_VERSION.sub!(/\d+$/) { |num| num.to_i + 1 }
-    end
-    
-    File.open("VERSION", 'w') { |v| v.write GEM_VERSION }
-  end
-end
-
-task :release => :bump do
-  system %(git commit VERSION *.gemspec -m "release v#{GEM_VERSION}")
-  system %(git tag -am "release v#{GEM_VERSION}" v#{GEM_VERSION})
-end
