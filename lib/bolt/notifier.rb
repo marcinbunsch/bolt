@@ -10,7 +10,7 @@ module Bolt
     # Constructor
     def initialize 
       # find appropriate listener
-      $stdout.puts "** Using #{notifier.class}... \n"
+      $stdout.puts "** Using #{notifier.class} \n"
 
       # launch appropriate listener      
       # notifier.new

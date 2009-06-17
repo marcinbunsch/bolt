@@ -1,5 +1,42 @@
+require 'yaml'
 # Why Bolt? Cause it's a cool name, that's why :)
 module Bolt
+  
+  # static location for settings
+  @@config = {}
+  
+  # set a config setting
+  def self.set(key, value)
+    @@config[key] = value
+  end
+  
+  # retrieve a value for a config setting
+  def self.get(key)
+    @@config[key]
+  end
+  
+  # convienience accessor
+  def self.[](key)
+    @@config[key]
+  end
+  
+  # read the .bolt file for configuration
+  def self.read_dotfile
+    if File.exists?('.bolt')
+      $stdout.puts "** Found .bolt file"
+      @@config.merge!(YAML.load_file('.bolt'))
+    end
+  end
+  
+  def self.start
+    $stdout.puts "** Starting Bolt..."
+    
+    # read the dotfile
+    Bolt.read_dotfile
+    
+    Bolt::Listener.new
+  end
+  
   autoload :Mapper, 'bolt/mapper'
   autoload :Runner, 'bolt/runner'
   autoload :Notifier, 'bolt/notifier'

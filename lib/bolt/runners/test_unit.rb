@@ -157,9 +157,15 @@ module Bolt
           require file
         rescue LoadError
           notifier.error("Error in #{file}", $!)
+          puts $!
           return
         rescue ArgumentError
           notifier.error("Error in #{file}", $!)
+          puts $!
+          return
+        rescue SyntaxError
+          notifier.error("Error in #{file}", $!)
+          puts $!
           return
         end
         

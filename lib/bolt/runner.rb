@@ -10,17 +10,24 @@ module Bolt
     # Constructor
     def initialize 
       # find appropriate listener
-      $stdout.puts "** Using #{runner.class}... \n"
+      runner
     end
     
     # Pick a listener to launch
     def runner
       return selected if selected
-      # TODO: os identification via RUBY_PLATFORM is flawed as it will return 'java' in jruby. Look for a different solution
       
+      if Bolt['runner']
+        self.selected= Bolt::Runners::TestUnit.new if Bolt['runner'] == 'test_unit'
+        self.selected= Bolt::Runners::RSpec.new if Bolt['runner'] == 'rspec'
+        $stdout.puts "** Using #{selected.class} based on 'runner' setting in .bolt file \n"
+        return self.selected
+      end
+      $stdout.puts "** Determining runner... \n"
       self.selected= Bolt::Runners::TestUnit.new
-      self.selected= Bolt::Runners::RSpec.new if File.directory?('spec')
-      selected
+      self.selected= Bolt::Runners::RSpec.new  if File.directory?('spec')
+      $stdout.puts "** Using #{selected.class} \n"
+      self.selected
     end
     
   end

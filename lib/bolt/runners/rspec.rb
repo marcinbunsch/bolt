@@ -23,19 +23,27 @@ module Bolt
         # force reload of file
         $".delete(filename)
         $".delete(File.join(Dir.pwd, filename))
-        
-=begin
-        # FIXME: This does not work well against a real project.
-        klassname = filename.sub('app/controllers/', '').sub('app/models/', '').sub('lib/', '')
-        test_class = klassname.sub('.rb', '').gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
-        root_klass = test_class.split('::').first
+        file = filename
+        # reload tests and classes
+        if file.match(/(app\/controllers|app\/models|lib\/)/)
+          puts '=================='
+          klassname = file.sub('app/controllers/', '').sub('app/models/', '').sub('lib/', '')
+          klass_to_be_tested = klassname.sub('.rb', '').gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
+          
 
-        # remove the top constant/class from memory
-        # this is required to rebuild classes before test run
-        # one limitation - Spec/Test cannot be reloaded or it will crash
-        Object.send(:remove_const, root_klass) unless root_klass == 'Spec' or root_klass == 'Test'
-=end
-        
+          # remove all methods - don't worry, the reload will bring them back refreshed
+          begin
+            klass = eval(klass_to_be_tested)
+            klass.instance_methods.each { |m| 
+              begin
+                klass.send(:remove_method, m)
+              rescue
+              end
+            }
+          rescue NameError
+          end
+        end
+
         if filename.include?('app/controllers') or filename.include?('app/models') or filename.include?('lib/')
           begin
             require File.join(Dir.pwd, filename)

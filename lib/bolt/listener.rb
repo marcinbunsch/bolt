@@ -11,9 +11,8 @@ module Bolt
     
     # Constructor
     def initialize
-      $stdout.puts "** Starting Bolt..."
       # find appropriate listener
-      $stdout.puts "** Using #{listener.class}... "
+      $stdout.puts "** Using #{listener.class} "
       
       # trap the INT signal 
       add_sigint_handler
