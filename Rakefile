@@ -19,7 +19,7 @@ task :gemspec => "version:read" do
     gem.has_rdoc = false
     
     gem.version = GEM_VERSION
-    gem.files = FileList['Rakefile', '{bin,lib,images,spec}/**/*', 'README*', 'LICENSE*']
+    gem.files = FileList['.bolt.sample', 'Rakefile', '{bin,lib,images,spec}/**/*', 'README*', 'LICENSE*']
     gem.executables = Dir['bin/*'].map { |f| File.basename(f) }
   end
   

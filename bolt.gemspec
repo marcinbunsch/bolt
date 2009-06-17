@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.default_executable = %q{bolt}
   s.email = %q{marcin@applicake.com}
   s.executables = ["bolt"]
-  s.files = ["Rakefile", "bin/bolt", "lib/bolt", "lib/bolt/adapters", "lib/bolt/adapters/rails.rb", "lib/bolt/listener.rb", "lib/bolt/listeners", "lib/bolt/listeners/generic.rb", "lib/bolt/listeners/osx.rb", "lib/bolt/notifier.rb", "lib/bolt/notifiers", "lib/bolt/notifiers/generic.rb", "lib/bolt/notifiers/growl.rb", "lib/bolt/runner.rb", "lib/bolt/runners", "lib/bolt/runners/rspec.rb", "lib/bolt/runners/test_unit.rb", "lib/bolt.rb", "images/failed.png", "images/LICENSE", "images/pending.png", "images/success.png", "spec/bolt", "spec/bolt/runners", "spec/bolt/runners/rspec_spec.rb", "spec/bolt/runners/test_unit_spec.rb", "README.textile", "LICENSE"]
+  s.files = [".bolt.sample", "Rakefile", "bin/bolt", "lib/bolt", "lib/bolt/adapters", "lib/bolt/adapters/rails.rb", "lib/bolt/listener.rb", "lib/bolt/listeners", "lib/bolt/listeners/generic.rb", "lib/bolt/listeners/osx.rb", "lib/bolt/notifier.rb", "lib/bolt/notifiers", "lib/bolt/notifiers/generic.rb", "lib/bolt/notifiers/growl.rb", "lib/bolt/runner.rb", "lib/bolt/runners", "lib/bolt/runners/rspec.rb", "lib/bolt/runners/test_unit.rb", "lib/bolt.rb", "images/failed.png", "images/LICENSE", "images/pending.png", "images/success.png", "spec/bolt", "spec/bolt/runners", "spec/bolt/runners/rspec_spec.rb", "spec/bolt/runners/test_unit_spec.rb", "README.textile", "LICENSE"]
   s.homepage = %q{http://github.com/marcinbunsch/bolt}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.3}
