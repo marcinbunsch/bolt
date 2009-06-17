@@ -36,32 +36,32 @@ module Bolt
         # force reload of file
         $".delete(file)
         $".delete(File.join(Dir.pwd, file))
-=begin
-        # FIXME: This does not work well against a real project.
-        klassname = file.sub('app/controllers/', '').sub('app/models/', '').sub('lib/', '')
-        puts klassname
-        test_class = klassname.sub('.rb', '').gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
         
-        target_class = Object
-        target_classes = []
-        test_class.split('::').each do |c|
-           target_class = target_class.const_get(c) 
-           target_classes << target_class
+        # reload tests and classes
+        if file.match(/(test\/functional|test\/unit|app\/controllers|app\/models|lib\/)/)
+          puts '=================='
+          klassname = file.sub('test/unit/', '').sub('test/functional/', '').sub('app/controllers/', '').sub('app/models/', '').sub('lib/', '')
+          klass_to_be_tested = klassname.sub('.rb', '').gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
+          
+
+          # remove all methods - don't worry, the reload will bring them back refreshed
+          begin
+            klass = eval(klass_to_be_tested)
+            klass.instance_methods.each { |m| 
+              begin
+                klass.send(:remove_method, m)
+              rescue
+              end
+            }
+          rescue NameError
+          end
         end
-        
-        # remove the top constant/class from memory
-        # this is required to rebuild classes before test run
-        # one limitation - Spec/Test cannot be reloaded or it will crash
-        if target_classes.size >= 2
-          puts 'removing ' + target_classes[-1].to_s.split('::').last.to_s + ' from ' + target_classes[-2].to_s
-          target_classes[-2].send(:remove_const, target_classes[-1].to_s.split('::').last.to_s)
-        else
-          Object.send(:remove_const, target_classes.first.to_s) unless target_classes.first.to_s == 'Test'
-        end
-=end     
+
         if file.include?('app/controllers') or file.include?('app/models') or file.include?('lib/')
           begin
-            require File.join(Dir.pwd, file)
+            filename = File.join(Dir.pwd, file)
+            filename << '.rb' if !filename.match('.rb')
+            load filename
           rescue LoadError
             notifier.error("Error in #{file}", $!)
             return []
@@ -70,7 +70,7 @@ module Bolt
             return []
           end
         end
-        
+      
         puts '=> Test::Unit running test for ' + file
         test_files = translate(file)
         
