@@ -1,1 +1,2 @@
+# possible choices: test_unit, rspec
 runner: rspec
