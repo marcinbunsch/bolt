@@ -16,7 +16,11 @@ It takes solutions from several gems:
 *  *autotest* - obviously. Whole concept, parts of generic listener
 *  *Roman2K-rails_test_serving* - concept of running tests with preloaded environment, elements of test::unit runner
 
-h1. Copyright
+h2. Contributors
+
+* *cziko* - http://github.com/cziko - Growl Notifier network support (via ruby-growl)
+
+h2. Copyright
 
 * *autotest* - ZenTest
 * *rails-test-serving* - Roman2K
