@@ -9,29 +9,37 @@ module Bolt
     
     # Constructor
     def initialize 
-      # find appropriate listener
-      $stdout.puts "** Using #{notifier.class} \n"
-
-      # launch appropriate listener      
-      # notifier.new
-      
+      # find appropriate notifier
+      notifier
+      # present
+      $stdout.puts "** Using #{notifier.class} \n"      
     end
 
     # Pick a listener to launch
     def notifier
-      return selected if selected      
-      self.selected= Bolt::Notifiers::Generic.new
-      # growl
-      output = %x[which growlnotify]
-      if output.to_s.include?('/growlnotify')
-        self.selected= Bolt::Notifiers::Growl.new
-      elsif Bolt['notifier'] == "growl" 
-        self.selected= Bolt::Notifiers::Growl.new(Bolt['notifier_host'])
+      return selected if selected
+      
+
+      if Bolt['notifier'] and ['generic', 'growl'].include?(Bolt['notifier'])
+        self.selected= Bolt::Notifiers::Growl.new if Bolt['notifier'] == 'growl'
+        self.selected= Bolt::Notifiers::Generic.new if Bolt['notifier'] == 'generic'
+        $stdout.puts "** Found 'notifier' setting in .bolt"
+        return self.selected
       end
-      #self.selected= Bolt::Listeners::Generic
-      # self.selected= Bolt::Listeners::OSX if os_string.include?("darwin")
-      #self.selected= Bolt::Listeners::Windows if os_string.include?("mswin")
-      #self.selected= Bolt::Listeners::Linux if os_string.include?("linux")
+      
+      $stdout.puts "** Determining notifier... \n"
+      
+      # default - growl (if growlnotify is present)
+      output = %x[which growlnotify]
+      if !Bolt['notifier'] and output.to_s.include?('/growlnotify')
+        self.selected= Bolt::Notifiers::Growl.new(:use_growlnotify => true)        
+      end
+      
+      # default if else fails
+      if !selected
+        self.selected= Bolt::Notifiers::Generic.new
+      end
+
       selected
     end
    

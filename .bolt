@@ -1,0 +1,3 @@
+runner: rspec
+listener: generic
+notifier: growl

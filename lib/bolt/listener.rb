@@ -53,6 +53,16 @@ module Bolt
     # Pick a listener to launch
     def listener
       return selected if selected
+      
+      if Bolt['listener'] and ['generic', 'osx'].include?(Bolt['listener'])
+        self.selected= Bolt::Listeners::Generic.new if Bolt['listener'] == 'generic'
+        self.selected= Bolt::Listeners::Osx.new if Bolt['listener'] == 'osx'
+        $stdout.puts "** Found listener setting in .bolt"
+        return self.selected
+      end
+        
+      $stdout.puts "** Determining listener..."
+      
       # TODO: os identification via RUBY_PLATFORM is flawed as it will return 'java' in jruby. Look for a different solution
       os_string = RUBY_PLATFORM.downcase
       self.selected= Bolt::Listeners::Generic.new      

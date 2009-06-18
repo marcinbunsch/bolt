@@ -9,8 +9,10 @@ module Bolt
     
     # Constructor
     def initialize 
-      # find appropriate listener
+      # find appropriate runner
       runner
+      
+      $stdout.puts "** Using #{selected.class} \n"
     end
     
     # Pick a listener to launch
@@ -20,13 +22,12 @@ module Bolt
       if Bolt['runner'] and ['test_unit', 'rspec'].include?(Bolt['runner'])
         self.selected= Bolt::Runners::TestUnit.new if Bolt['runner'] == 'test_unit'
         self.selected= Bolt::Runners::RSpec.new if Bolt['runner'] == 'rspec'
-        $stdout.puts "** Using #{selected.class} based on 'runner' setting in .bolt file \n"
+        $stdout.puts "** Found 'runner' setting in .bolt"
         return self.selected
       end
       $stdout.puts "** Determining runner... \n"
       self.selected= Bolt::Runners::TestUnit.new
       self.selected= Bolt::Runners::RSpec.new  if File.directory?('spec')
-      $stdout.puts "** Using #{selected.class} \n"
       self.selected
     end
     

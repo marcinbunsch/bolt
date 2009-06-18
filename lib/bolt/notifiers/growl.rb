@@ -1,29 +1,41 @@
 #
-# Bolt::Notifiers::Generic
+# Bolt::Notifiers::Growl
 #
-# The Generic Notifier does not do anything, it's for stability
+# The Growl Notifier uses Growl to report on test results
 # The Growl Notifer is copied from mislav/rspactor growl module
 #
-
-# CZ:TODO not sure if gems are available here
-gem 'ruby-growl'
-require 'ruby-growl'
-
+# Growl network support implemented by cziko (http://github.com/cziko/)
+#
 module Bolt
   module Notifiers
     class Growl
 
-      attr_accessor :host
+      attr_accessor :host, :use_growlnotify
 
-      def initialize(host="localhost")
-        @host = host
+      def initialize(pars = {})
+        if Bolt['notifier_host']
+          @host = Bolt['notifier_host']
+          # load the gem only if required
+          begin 
+            gem 'ruby-growl'
+            require 'ruby-growl'
+          rescue ::Gem::LoadError
+            puts "** ERROR: Could not start growl network support. Install 'ruby-growl' gem to enable."
+            @host = nil
+          end
+        end
+        @use_growlnotify = false
+        @use_growlnotify = true if pars[:use_growlnotify] or !@host
       end
     
       # generic notify method
       def notify(title, msg, img, pri = 0)
-        #system("growlnotify -w -n rspactor --image #{img} -p #{pri} -m #{msg.inspect} #{title} &") 
-        g = ::Growl.new("192.168.1.24", "bolt", ["notification"], nil, "12345")
-        g.notify("notification", title, msg, pri)
+        if @use_growlnotify
+          system("growlnotify -w -n bolt --image #{img} -p #{pri} -m #{msg.inspect} #{title} &") 
+        else
+          g = ::Growl.new(@host, "bolt", ["notification"])
+          g.notify("notification", title, msg, pri)
+        end
       end
 
       # info message
