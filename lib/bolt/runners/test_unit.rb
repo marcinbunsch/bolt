@@ -174,7 +174,8 @@ module Bolt
         klass = eval(test_class)
         
         Test::Unit::UI::Console::TestRunner.run(klass)
-      
+        Test::Unit.run = false
+        
         # Invoke method to test that writes to stdout.
         result = test_io.string.to_s.dup
 

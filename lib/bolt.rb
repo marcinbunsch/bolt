@@ -24,7 +24,8 @@ module Bolt
   def self.read_dotfile
     if File.exists?('.bolt')
       $stdout.puts "** Found .bolt file"
-      @@config.merge!(YAML.load_file('.bolt'))
+      read = YAML.load_file('.bolt')
+      @@config.merge!(read) if read
     end
   end
   
