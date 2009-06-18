@@ -23,6 +23,7 @@ module Bolt
       if Bolt['notifier'] and ['generic', 'growl'].include?(Bolt['notifier'])
         self.selected= Bolt::Notifiers::Growl.new if Bolt['notifier'] == 'growl'
         self.selected= Bolt::Notifiers::Generic.new if Bolt['notifier'] == 'generic'
+        self.selected= Bolt::Notifiers::NotifyOsd.new if Bolt['notifier'] == 'notify_send'
         $stdout.puts "** Found 'notifier' setting in .bolt"
         return self.selected
       end
@@ -33,6 +34,11 @@ module Bolt
       output = %x[which growlnotify]
       if !Bolt['notifier'] and output.to_s.include?('/growlnotify')
         self.selected= Bolt::Notifiers::Growl.new(:use_growlnotify => true)        
+      end
+      
+      output = %x[which notify-send]
+      if !Bolt['notifier'] and output.to_s.include?('/notify-send')
+        self.selected= Bolt::Notifiers::NotifyOsd.new     
       end
       
       # default if else fails
