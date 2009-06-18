@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
      "lib/bolt/notifier.rb",
      "lib/bolt/notifiers/generic.rb",
      "lib/bolt/notifiers/growl.rb",
+     "lib/bolt/notifiers/notify_osd.rb",
      "lib/bolt/runner.rb",
      "lib/bolt/runners/rspec.rb",
      "lib/bolt/runners/test_unit.rb",
