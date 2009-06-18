@@ -20,11 +20,13 @@ module Bolt
     # Pick a listener to launch
     def notifier
       return selected if selected      
-      self.selected= Bolt::Notifiers::Generic.new 
+      self.selected= Bolt::Notifiers::Generic.new
       # growl
       output = %x[which growlnotify]
       if output.to_s.include?('/growlnotify')
         self.selected= Bolt::Notifiers::Growl.new
+      elsif Bolt['notifier'] == "growl" 
+        self.selected= Bolt::Notifiers::Growl.new(Bolt['notifier_host'])
       end
       #self.selected= Bolt::Listeners::Generic
       # self.selected= Bolt::Listeners::OSX if os_string.include?("darwin")

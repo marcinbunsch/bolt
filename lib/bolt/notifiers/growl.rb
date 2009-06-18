@@ -4,13 +4,26 @@
 # The Generic Notifier does not do anything, it's for stability
 # The Growl Notifer is copied from mislav/rspactor growl module
 #
+
+# CZ:TODO not sure if gems are available here
+gem 'ruby-growl'
+require 'ruby-growl'
+
 module Bolt
   module Notifiers
     class Growl
+
+      attr_accessor :host
+
+      def initialize(host="localhost")
+        @host = host
+      end
     
       # generic notify method
       def notify(title, msg, img, pri = 0)
-        system("growlnotify -w -n rspactor --image #{img} -p #{pri} -m #{msg.inspect} #{title} &") 
+        #system("growlnotify -w -n rspactor --image #{img} -p #{pri} -m #{msg.inspect} #{title} &") 
+        g = ::Growl.new("192.168.1.24", "bolt", ["notification"], nil, "12345")
+        g.notify("notification", title, msg, pri)
       end
 
       # info message
