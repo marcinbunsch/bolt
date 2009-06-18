@@ -81,5 +81,6 @@ module Bolt
   module Notifiers
     autoload :Generic, 'bolt/notifiers/generic'
     autoload :Growl, 'bolt/notifiers/growl'
+    autoload :NotifyOsd, 'bolt/notifiers/notify_osd'
   end
 end

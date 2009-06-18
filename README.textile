@@ -12,6 +12,7 @@ This is still in experimental phase, so all feedback is appreciated.
 
 It takes solutions from several gems:
 
+*  *sentientmonkey-autotest-notifyosd* - notify osd usage
 *  *mislav-rspactor* - inspiration, structure and growl notifier
 *  *autotest* - obviously. Whole concept, parts of generic listener
 *  *Roman2K-rails_test_serving* - concept of running tests with preloaded environment, elements of test::unit runner
@@ -22,6 +23,7 @@ h2. Contributors
 
 h2. Copyright
 
+* *autotest-notifyosd* - sentientmonkey
 * *autotest* - ZenTest
 * *rails-test-serving* - Roman2K
 * *rspactor* - Mislav Marohnić, Andreas Wolff, Pelle Braendgaard

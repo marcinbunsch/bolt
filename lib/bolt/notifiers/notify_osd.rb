@@ -15,7 +15,7 @@ module Bolt
     
       # generic notify method
       def notify(title, msg, img, pri = 'normal')
-        system "notify-send -i #{img} -u #{urg} '#{title}' '#{msg}'"
+        system "notify-send -i #{img} -u #{pri} '#{title}' '#{msg}'"
       end
 
       # info message
