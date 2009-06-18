@@ -10,7 +10,7 @@ begin
     gem.email = "marcin@applicake.com"
     gem.homepage = "http://github.com/marcinbunsch/bolt"
     gem.executables = Dir['bin/*'].map { |f| File.basename(f) }
-    gem.files = FileList['.bolt.sample', 'Rakefile', '{bin,lib,images,spec}/**/*', 'README*', 'LICENSE*']
+    gem.files = FileList['.bolt', '.document', '.bolt.sample', 'Rakefile', '{bin,lib,images,spec}/**/*', 'README*', 'LICENSE*']
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 

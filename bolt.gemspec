@@ -15,7 +15,9 @@ Gem::Specification.new do |s|
      "README.textile"
   ]
   s.files = [
-    ".bolt.sample",
+    ".bolt",
+     ".bolt.sample",
+     ".document",
      "LICENSE",
      "README.textile",
      "Rakefile",
