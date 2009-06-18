@@ -70,6 +70,7 @@ module Bolt
       @@noticed_files
     end
     
+    autoload :Cucumber, 'bolt/runners/cucumber'
     autoload :TestUnit, 'bolt/runners/test_unit'
     autoload :RSpec, 'bolt/runners/rspec'
   end

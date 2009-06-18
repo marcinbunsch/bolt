@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
      "lib/bolt/notifiers/growl.rb",
      "lib/bolt/notifiers/notify_osd.rb",
      "lib/bolt/runner.rb",
+     "lib/bolt/runners/cucumber.rb",
      "lib/bolt/runners/rspec.rb",
      "lib/bolt/runners/test_unit.rb",
      "spec/bolt/runners/rspec_spec.rb",
@@ -48,7 +49,8 @@ Gem::Specification.new do |s|
   s.summary = %q{Bolt is a merge of autotest, mislav/rspactor and rails_server_testing to produce a lightning fast, configurable and simple to set up autotest clone}
   s.test_files = [
     "spec/bolt/runners/rspec_spec.rb",
-     "spec/bolt/runners/test_unit_spec.rb"
+     "spec/bolt/runners/test_unit_spec.rb",
+     "test/unit/bolt/listener_test.rb"
   ]
 
   if s.respond_to? :specification_version then

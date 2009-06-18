@@ -35,6 +35,18 @@ task :run do
   system('ruby -I lib bin/bolt')
 end
 
+desc 'Reinstall the gem locally'
+task :reinstall do
+  f = File.open('VERSION')
+  version = f.read.gsub("\n", '')
+  f.close
+  system("sudo gem uninstall bolt")
+  system("gem build bolt.gemspec")
+  system("sudo gem install bolt-#{version}.gem")
+  system("rm bolt-#{version}.gem")
+end
+
+
 task :default => :run
 
 require 'rake/rdoctask'
