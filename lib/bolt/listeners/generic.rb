@@ -15,7 +15,7 @@ module Bolt
       end 
       
       def start
-        puts "** #{self.class} is scanning for files... "
+        puts "** #{self.class} is scanning for files... " if Bolt['verbose']
         # build a file collection
         find_files
         puts "** #{self.class} watching #{files.size} files... "
@@ -37,7 +37,7 @@ module Bolt
             updated << filename
             # update the mtime in file registry so we it's only send once
             files[filename] = current_mtime
-            $stdout.puts ">> Spotted change in #{filename}"  
+            $stdout.puts ">> Spotted change in #{filename}" if Bolt['verbose']
           end
         end
         parent.handle(updated) if updated != []

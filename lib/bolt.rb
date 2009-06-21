@@ -23,9 +23,16 @@ module Bolt
   # read the .bolt file for configuration
   def self.read_dotfile
     if File.exists?('.bolt')
-      $stdout.puts "** Found .bolt file"
+      $stdout.puts "** Found .bolt file" if Bolt['verbose']
       read = YAML.load_file('.bolt')
       @@config.merge!(read) if read
+    end
+  end
+  
+  # read the arguments passed in cli
+  def self.read_argv
+    ARGV.each do |arg|
+      self['verbose'] = true if arg == '-v'
     end
   end
   
@@ -34,6 +41,9 @@ module Bolt
     
     # read the dotfile
     Bolt.read_dotfile
+    
+    # read the arguments passed
+    Bolt.read_argv
     
     Bolt::Listener.new
   end
@@ -70,6 +80,7 @@ module Bolt
       @@noticed_files
     end
     
+    autoload :Base, 'bolt/runners/base'
     autoload :Cucumber, 'bolt/runners/cucumber'
     autoload :TestUnit, 'bolt/runners/test_unit'
     autoload :RSpec, 'bolt/runners/rspec'

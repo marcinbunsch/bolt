@@ -12,7 +12,7 @@ module Bolt
       # find appropriate notifier
       notifier
       # present
-      $stdout.puts "** Using #{notifier.class} \n"      
+      $stdout.puts "** Using #{notifier.class} \n" if Bolt['verbose']
     end
 
     # Pick a listener to launch
@@ -24,11 +24,11 @@ module Bolt
         self.selected= Bolt::Notifiers::Growl.new if Bolt['notifier'] == 'growl'
         self.selected= Bolt::Notifiers::Generic.new if Bolt['notifier'] == 'generic'
         self.selected= Bolt::Notifiers::NotifyOsd.new if Bolt['notifier'] == 'notify_send'
-        $stdout.puts "** Found 'notifier' setting in .bolt"
+        $stdout.puts "** Found 'notifier' setting in .bolt" if Bolt['verbose']
         return self.selected
       end
       
-      $stdout.puts "** Determining notifier... \n"
+      $stdout.puts "** Determining notifier... \n" if Bolt['verbose']
       
       # default - growl (if growlnotify is present)
       output = %x[which growlnotify]

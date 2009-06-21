@@ -27,7 +27,7 @@ module Bolt
         begin
           require 'osx/foundation'         
         rescue LoadError
-          puts "** Could not load osx/foundation. RubyCocoa not installed? Falling back to Bolt::Listeners::Generic"
+          puts "** Could not load osx/foundation. RubyCocoa not installed? Falling back to Bolt::Listeners::Generic" if Bolt['verbose']
           return Bolt::Listeners::Generic.new
         end
         
@@ -35,7 +35,7 @@ module Bolt
           OSX.require_framework '/System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework'
           return self.new
         rescue NameError
-          puts "** There was an error loading Bolt::Listeners::Osx. Falling back to Bolt::Listeners::Generic"
+          puts "** There was an error loading Bolt::Listeners::Osx. Falling back to Bolt::Listeners::Generic" if Bolt['verbose']
           return Bolt::Listeners::Generic.new
         end
       end

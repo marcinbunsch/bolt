@@ -7,9 +7,13 @@ require 'test/unit/ui/console/testrunner'
 #
 module Bolt
   module Runners
-    class TestUnit
+    class TestUnit < Bolt::Runners::Base
       
+      # mappings define which folders hold the files that the listener should listen to
       MAPPINGS =  /(\.\/app\/|\.\/lib\/|\.\/test\/functional|\.\/test\/unit)/
+      
+      # class map specifies the folders holding classes that can be reloaded
+      CLASS_MAP = /(test\/functional\/|test\/unit\/|app\/controllers\/|app\/models\/|lib\/)/
       
       attr_accessor :notifier, :test_io
       
@@ -29,69 +33,7 @@ module Bolt
         end
         Thread.current["test_runner_io"] = io
       end
-      
-      # handle specified file
-      def handle(file)
-        
-        # force reload of file
-        $".delete(file)
-        $".delete(File.join(Dir.pwd, file))
-        
-        # reload tests and classes
-        if file.match(/(test\/functional|test\/unit|app\/controllers|app\/models|lib\/)/)
-          puts '=================='
-          klassname = file.sub('test/unit/', '').sub('test/functional/', '').sub('app/controllers/', '').sub('app/models/', '').sub('lib/', '')
-          klass_to_be_tested = klassname.sub('.rb', '').gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
-          
-
-          # remove all methods - don't worry, the reload will bring them back refreshed
-          begin
-            klass = eval(klass_to_be_tested)
-            klass.instance_methods.each { |m| 
-              begin
-                klass.send(:remove_method, m)
-              rescue
-              end
-            }
-          rescue NameError
-          end
-        end
-
-        if file.include?('app/controllers') or file.include?('app/models') or file.include?('lib/')
-          begin
-            filename = File.join(Dir.pwd, file)
-            filename << '.rb' if !filename.match('.rb')
-            load filename
-          rescue LoadError
-            notifier.error("Error in #{file}", $!)
-            return []
-          rescue ArgumentError
-            notifier.error("Error in #{file}", $!)
-            return []
-          end
-        end
-      
-        puts '=> Test::Unit running test for ' + file
-        test_files = translate(file)
-        
-        puts '==== Test::Unit running: ' + test_files.join(', ') + ' ===='
-        
-        run(test_files) if test_files != []
-        
-        puts '==== Test::Unit completed run ===='
-        
-      end
-      
-      # check whether file exists
-      def file_verified?(filename)
-        if !File.exists?(filename)
-          notifier.test_file_missing(filename)
-          puts "=> ERROR: could not find test file: #{filename}"
-          return false
-        end
-        return true
-      end
-      
+    
       # mapping is a copied and modified version of mislav/rspactor Inspector#translate
       def translate(file)
         
@@ -124,7 +66,7 @@ module Bolt
           candidates << test_filename
         end
         if candidates == []
-          puts "=> NOTICE: could not find test file for: #{file}"
+          puts "=> NOTICE: could not find test file for: #{file}" if Bolt['verbose']
         end
         # puts candidates.inspect
         candidates
@@ -133,15 +75,11 @@ module Bolt
       def run(files)
         file = files.first
         puts "** Running #{file}"
-        # make sure that you reload the test file
-        #load file
-        #contents = File.open(file).read
-        # puts contents
-        #eval contents
         
-        # This is Rails' String#camelcase
-        klassname = file.sub('test/functional/', '').sub('test/unit/', '')
-        test_class = klassname.sub('.rb', '').gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
+        class_filename = file.sub(self.class::CLASS_MAP, '')
+        
+        # get the class
+        test_class = resolve_classname(class_filename)
         
         # create dummy wrapper modules if test is in subfolder
         test_class.split('::').each do |part|
@@ -149,9 +87,6 @@ module Bolt
         end
         
         $".delete(file)
-        
-        #(defined?(ActiveRecord::Base) ? ActiveRecord::Base.instance_eval { subclasses }.each { |c| c.reset_column_information } : nil)
-        #(defined?(ActiveSupport::Dependencies) ? ActiveSupport::Dependencies.clear : nil)
         
         begin
           require file
