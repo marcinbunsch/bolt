@@ -15,10 +15,8 @@ module Bolt
       # class map specifies the folders holding classes that can be reloaded
       CLASS_MAP = /(app\/controllers\/|app\/models\/|lib\/)/
       
+      # accesors
       attr_accessor :notifier, :test_io
-      
-      def initialize
-      end
       
       # mapping is a copied and modified version of mislav/rspactor Inspector#translate
       def translate(file)
@@ -57,6 +55,7 @@ module Bolt
         candidates
       end
       
+      # run the appropriate test
       def run(files)
         file = files.first
         

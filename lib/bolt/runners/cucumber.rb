@@ -5,12 +5,17 @@
 #
 module Bolt
   module Runners
-    class Cucumber
+    class Cucumber < Bolt::Runners::Base
       
+      # mappings define which folders hold the files that the listener should listen to
       MAPPINGS =  /(\.\/app\/|\.\/lib\/|\.\/features\/)/
       
-      attr_accessor :notifier, :test_io
+      # class map specifies the folders holding classes that can be reloaded
+      CLASS_MAP = /(app\/controllers\/|app\/models\/|lib\/)/
       
+      attr_accessor :notifier, :test_io, :heard
+      
+      # step mother storage
       @@mother = nil
       
       def self.mother=(step_mother)
@@ -21,74 +26,15 @@ module Bolt
         @@mother
       end
       
-      def initialize
-      end
-      
-      # handle specified file
-      def handle(filename)
-        puts '=> Cucumber running test for ' + filename
-        
-        # force reload of file
-        $".delete(filename)
-        $".delete(File.join(Dir.pwd, filename))
-        file = filename
-        # reload tests and classes
-        if file.match(/(app\/controllers|app\/models|lib\/)/)
-          puts '=================='
-          klassname = file.sub('app/controllers/', '').sub('app/models/', '').sub('lib/', '')
-          klass_to_be_tested = klassname.sub('.rb', '').gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
-          
-
-          # remove all methods - don't worry, the reload will bring them back refreshed
-          begin
-            klass = eval(klass_to_be_tested)
-            klass.instance_methods.each { |m| 
-              begin
-                klass.send(:remove_method, m)
-              rescue
-              end
-            }
-          rescue NameError
-          end
-        end
-
-        if filename.include?('app/controllers') or filename.include?('app/models') or filename.include?('lib/')
-          begin
-            require File.join(Dir.pwd, filename)
-          rescue LoadError
-            notifier.error("Error in #{filename}", $!)
-            return false
-          rescue ArgumentError
-            notifier.error("Error in #{filename}", $!)
-            return false
-          end
-        end
-        
-        test_files = translate(filename)
-        
-        return if test_files == []
-          
-        puts '==== Cucumber running: ' + test_files.join(', ') + ' ===='
-        
-        run(test_files)
-        
-        puts '==== Cucumber completed run ===='
-      end
-      
-      # check whether file exists
-      def file_verified?(filename)
-        if !File.exists?(filename)
-          notifier.test_file_missing(filename)
-          puts "=> ERROR: could not find feature file: #{filename}"
-          return false
-        end
-        return true
-      end
-      
       # mapping is a copied and modified version of mislav/rspactor Inspector#translate
       def translate(file)
+        self.heard = file
+        if file.match('other')
+          return ['features/other.feature']
+        else
+          return ['features/posts.feature']
+        end
         
-        return ['features/posts.feature']
         basename = File.basename(file)
         candidates = []
         test_filename = nil
@@ -133,7 +79,8 @@ module Bolt
         # refresh the loaded test file
         #$".delete(file)
         #require file
-        Bolt::Runners::Cucumber.mother.reload_definitions! if Bolt::Runners::Cucumber.mother
+
+        Bolt::Runners::Cucumber.mother.reload_definitions! if Bolt::Runners::Cucumber.mother and self.heard.match('_steps.rb')
         
         ::Cucumber::Cli::Main.execute([file])
 
@@ -158,18 +105,20 @@ module Bolt
   end
 end
 
+# Cucumber hacks
 require 'cucumber'
 require 'cucumber/rspec_neuter'
 require 'cucumber/cli/main'
-# Time to hack around a bit
+
 module Cucumber
   module StepMother
     
     def reload_definitions!
       step_definitions.clear
-      #Dir['features/step_definitions/*'].map do |f| 
-        #require "features/step_definitions/#{File.basename(f)}"
-      #end
+      Dir['features/step_definitions/*'].map do |f| 
+        $".delete(f)
+        require "features/step_definitions/#{File.basename(f)}"
+      end
     end
     
     def clear_steps_and_scenarios!

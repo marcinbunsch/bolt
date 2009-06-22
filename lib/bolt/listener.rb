@@ -76,6 +76,7 @@ module Bolt
     end
     
     # capture the INT signal
+    # TODO: Move to Bolt.add_sigint_handler
     def add_sigint_handler
       trap 'INT' do
         $stdout.puts "\n** Exiting Bolt..."

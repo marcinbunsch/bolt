@@ -86,6 +86,7 @@ module Bolt
           eval "module ::#{part}; end" if !part.match('Test')
         end
         
+        # TODO: make this reload use load_file
         $".delete(file)
         
         begin

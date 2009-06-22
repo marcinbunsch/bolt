@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcin Bunsch"]
-  s.date = %q{2009-06-18}
+  s.date = %q{2009-06-22}
   s.default_executable = %q{bolt}
   s.email = %q{marcin@applicake.com}
   s.executables = ["bolt"]
@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
      "lib/bolt/notifiers/growl.rb",
      "lib/bolt/notifiers/notify_osd.rb",
      "lib/bolt/runner.rb",
+     "lib/bolt/runners/base.rb",
      "lib/bolt/runners/cucumber.rb",
      "lib/bolt/runners/rspec.rb",
      "lib/bolt/runners/test_unit.rb",
