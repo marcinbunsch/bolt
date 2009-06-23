@@ -1,2 +1,15 @@
-# possible choices: test_unit, rspec
+# possible choices: generic, osx
+listener: generic
+# possible choices: test_unit, rspec, cucumber
 runner: rspec
+# possible choices: growl, notify_osd
+notifier: growl
+verbose: true
+# this is only required if you're using cucumber
+feature_map:
+  other:
+    controllers: application
+    models: post
+  posts:
+    controllers: posts, application
+    models: post

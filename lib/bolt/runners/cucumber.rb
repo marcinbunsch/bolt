@@ -13,7 +13,7 @@ module Bolt
       # class map specifies the folders holding classes that can be reloaded
       CLASS_MAP = /(app\/controllers\/|app\/models\/|lib\/)/
       
-      attr_accessor :notifier, :test_io, :heard
+      attr_accessor :notifier, :test_io, :heard, :controllers, :models
       
       # step mother storage
       @@mother = nil
@@ -26,51 +26,76 @@ module Bolt
         @@mother
       end
       
+      def initialize
+        self.controllers = {}
+        self.models = {}
+        read_map
+      end
+      
+      def read_map
+        if !Bolt['feature_map']
+          puts "** ERROR: could not find feature_map in .bolt"
+        else
+          Bolt['feature_map'].each do |feature, map|
+            # controllers
+            if map["controllers"].include?(',')
+              map["controllers"].split(',').each { |controller| 
+                name = controller.strip     
+                self.controllers[name] = [] if !self.controllers[name]
+                self.controllers[name] << feature
+              }
+            else
+              name = map["controllers"]
+              self.controllers[name] = [] if !self.controllers[name]
+              self.controllers[name] << feature
+            end
+            
+            # models
+            if map["models"].include?(',')
+              map["models"].split(',').each { |model| 
+                name = model.strip     
+                self.models[name] = [] if !self.models[name]
+                self.models[name] << feature
+              }
+            else
+              name = map["models"]
+              self.models[name] = [] if !self.models[name]
+              self.models[name] << feature
+            end
+          end
+        end
+        
+      end
       # mapping is a copied and modified version of mislav/rspactor Inspector#translate
       def translate(file)
         self.heard = file
-        if file.match('other')
-          return ['features/other.feature']
-        else
-          return ['features/posts.feature']
-        end
-        
-        basename = File.basename(file)
-        candidates = []
-        test_filename = nil
+                
         case file
           when %r:^app/controllers/:
-            test_filename = file.sub('.rb', '_spec.rb').sub('app/controllers', 'spec/controllers')
+          name = file.sub('_controller.rb', '').sub('app/controllers/', '')
+          features = self.controllers[name]
           when %r:^app/models/:
-            test_filename = "spec/models/#{basename.sub('.rb', '_spec.rb')}"
+          name = file.sub('.rb', '').sub('app/models/', '')
+          features = self.models[name]
+          #
           when %r:^app/views/:
-            file = file.sub('app/views/', '')
-            directory = file.split('/')[0..-2].compact.join('/')
-            test_filename = "spec/controllers/#{directory}_controller_spec.rb"
-          when %r:^spec/:
-            test_filename = file
+          file = file.sub('app/views/', '')
+          directory = file.split('/')[0..-2].compact.join('/')
+          features = self.controllers[directory]
           when %r:^lib/:
-            # map libs to straight specs
-            test_filename = "spec/#{file.sub('lib/', '').sub('.rb', '_spec.rb')}"
-          when 'config/routes.rb'
-            test_filename = "spec/controllers/#{basename.sub('.rb', '_spec.rb')}"
-          when 'config/database.yml', 'db/schema.rb'
-            #candidates << 'models'
+          name = file.sub('.rb', '').sub('lib/', '')
+          features = self.models[name]
           else
-            #
+          #
         end
-        if test_filename and file_verified?(test_filename)
-          candidates << test_filename
-        end
-        if candidates == []
-          puts "=> NOTICE: could not find feature file for: #{file}"
-        end
+        
+        features = [] if !features
+        
+        return features.collect { |name| "features/#{name}.feature" }
 
-        candidates
       end
       
       def run(files)
-        file = files.first
                 
         # redirect spec output to StringIO
         io = StringIO.new
@@ -82,7 +107,7 @@ module Bolt
 
         Bolt::Runners::Cucumber.mother.reload_definitions! if Bolt::Runners::Cucumber.mother and self.heard.match('_steps.rb')
         
-        ::Cucumber::Cli::Main.execute([file])
+        ::Cucumber::Cli::Main.execute(files)
 
         Bolt::Runners::Cucumber.mother.clear_steps_and_scenarios!
         # read the buffer
@@ -97,7 +122,7 @@ module Bolt
         last_three = last_three.gsub("\e[32m", '').gsub("\e[0m", '').gsub("\e[36m", '').gsub("\e[31m", '') # get ri of the color codes
         
         # sent result to notifier
-        notifier.result(file, last_three)
+        notifier.result(files.join(' '), last_three)
         
       end
       

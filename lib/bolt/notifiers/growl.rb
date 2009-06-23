@@ -63,6 +63,8 @@ module Bolt
           end
         elsif (results.match('0 failures, 0 errors')) # test::unit
           icon = 'success'
+        elsif (results.match(/([0-9]*) scenario(s*) \([0-9]+ passed\) ([0-9]*) step(s*) \([0-9]+ passed\)/)) # cucumber
+          icon = 'success'
         else
           icon = 'failed'
         end
