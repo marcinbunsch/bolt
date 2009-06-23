@@ -17,6 +17,17 @@ It takes solutions from several gems:
 *  *autotest* - obviously. Whole concept, parts of generic listener
 *  *Roman2K-rails_test_serving* - concept of running tests with preloaded environment, elements of test::unit runner
 
+h2. Installation
+
+<pre>
+	gem sources -a http://gems.github.com
+	sudo gem install marcinbunsch-bolt 
+</pre>
+
+h2. Running
+
+Cd into the folder you want bolt to run in and type 'bolt'
+
 h2. Contributors
 
 * *cziko* - http://github.com/cziko - Growl Notifier network support (via ruby-growl)
