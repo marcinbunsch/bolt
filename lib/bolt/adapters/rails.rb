@@ -1,6 +1,6 @@
-module Bolt
-  module Adapters
-    module Rails
+module Bolt #:nodoc:    
+  module Adapters #:nodoc:    
+    module Rails #:nodoc:    
     end
   end
 end
@@ -10,9 +10,9 @@ ENV['RAILS_ENV'] = 'test'
 require 'config/environment.rb'
 
 # This is a hack for Rails Test::Unit to prevent raising errors when a test file is loaded again
-module ActiveSupport
-  module Testing
-    module Declarative
+module ActiveSupport #:nodoc:    
+  module Testing #:nodoc:    
+    module Declarative #:nodoc:    
       # test "verify something" do
       #   ...
       # end
@@ -35,7 +35,7 @@ end
 # These hacks disable caching in views
 module ActionView #:nodoc:
   class PathSet #:nodoc:    
-    class Path
+    class Path #:nodoc:    
       def eager_load_templates?
         false
       end
@@ -45,8 +45,8 @@ end
 
 # disable the class check in initialize for path
 module ActionView #:nodoc:
-  class Template
-    class Path
+  class Template #:nodoc:    
+    class Path #:nodoc:    
       def initialize(path)
         # raise ArgumentError, "path already is a Path class" if path.is_a?(Path)
         @path = path.freeze
@@ -70,10 +70,10 @@ end
 
 # Rails < 2.3.0
 if Rails::VERSION::STRING =~ /^2\.3\.0/ || Rails::VERSION::STRING =~ /^2\.[0-2]\.[0-9]/
-  module ActionView
+  module ActionView #:nodoc:    
     # NOTE: The template that this mixin is being included into is frozen
     # so you cannot set or modify any instance variables
-    module Renderable
+    module Renderable #:nodoc:    
       private
         def recompile?(path)
           true
@@ -84,7 +84,7 @@ if Rails::VERSION::STRING =~ /^2\.3\.0/ || Rails::VERSION::STRING =~ /^2\.[0-2]\
   module ActionView #:nodoc:
     class PathSet #:nodoc:    
        
-       class Path
+       class Path #:nodoc:    
          
          # make it always return a refreshed template!
          def [](template_path)

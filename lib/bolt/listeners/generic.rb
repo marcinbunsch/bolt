@@ -66,7 +66,6 @@ module Bolt
         targets.each do |target|
           order = []
           Find.find(target) do |f|
-            
             in_mappings = f =~ self.mappings
             next if in_mappings.nil?
             next if test ?d, f
@@ -75,7 +74,7 @@ module Bolt
             next if f =~ /\/\.?#/ # Emacs autosave/cvs merge files
 
             filename = f.sub(/^\.\//, '')
-            
+
             result[filename] = File.stat(filename).mtime rescue next
           end
         end

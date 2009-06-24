@@ -35,7 +35,10 @@ module Bolt
         Thread.current["test_runner_io"] = io
       end
     
-      # mapping is a copied and modified version of mislav/rspactor Inspector#translate
+      # Translate a filename into a test filename
+      # 
+      # This is a copied and modified version of mislav/rspactor Inspector#translate
+      #
       def translate(file)
         
         basename = File.basename(file)
@@ -73,6 +76,7 @@ module Bolt
         candidates
       end
       
+      # Run the supplied files (tests)
       def run(files)
         file = files.first
         puts "** Running #{file}"

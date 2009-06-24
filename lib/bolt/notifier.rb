@@ -9,17 +9,16 @@ module Bolt
     
     # Constructor
     def initialize 
-      # find appropriate notifier
+      # find an appropriate notifier
       notifier
       # present
       $stdout.puts "** Using #{notifier.class} \n" if Bolt.verbose?
     end
 
-    # Pick a listener to launch
+    # Pick a notifier to launch
     def notifier
       return selected if selected
       
-
       if Bolt['notifier'] and ['generic', 'growl'].include?(Bolt['notifier'])
         self.selected= Bolt::Notifiers::Growl.new if Bolt['notifier'] == 'growl'
         self.selected= Bolt::Notifiers::Generic.new if Bolt['notifier'] == 'generic'

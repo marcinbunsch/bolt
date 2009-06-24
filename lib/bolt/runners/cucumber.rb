@@ -18,20 +18,24 @@ module Bolt
       # step mother storage
       @@mother = nil
       
+      # Save a reference for supplied StepMother 
       def self.mother=(step_mother)
         @@mother = step_mother
       end
       
+      # Get the referenced StepMother
       def self.mother
         @@mother
       end
       
+      # Create a new Cucumber Runner
       def initialize
         self.controllers = {}
         self.models = {}
         read_map
       end
       
+      # Read the feature map located in .bolt file
       def read_map
         if !Bolt['feature_map']
           puts "** ERROR: could not find feature_map in .bolt"
@@ -66,7 +70,11 @@ module Bolt
         end
         
       end
-      # mapping is a copied and modified version of mislav/rspactor Inspector#translate
+      
+      # Translate a filename into an array of feature filenames
+      # 
+      # This is a modified version of mislav/rspactor Inspector#translate
+      #
       def translate(file)
         self.heard = file
                 
@@ -97,7 +105,8 @@ module Bolt
 
       end
       
-      def run(files)
+      # Run an array of feature files
+      def run(features)
                 
         # redirect spec output to StringIO
         io = StringIO.new
@@ -109,7 +118,7 @@ module Bolt
 
         Bolt::Runners::Cucumber.mother.reload_definitions! if Bolt::Runners::Cucumber.mother and self.heard.match('_steps.rb')
         
-        ::Cucumber::Cli::Main.execute(files)
+        ::Cucumber::Cli::Main.execute(features)
 
         Bolt::Runners::Cucumber.mother.clear_steps_and_scenarios!
         # read the buffer
@@ -124,7 +133,7 @@ module Bolt
         last_three = last_three.gsub("\e[32m", '').gsub("\e[0m", '').gsub("\e[36m", '').gsub("\e[31m", '') # get ri of the color codes
         
         # sent result to notifier
-        notifier.result(files.join(' '), last_three)
+        notifier.result(features.join(' '), last_three)
         
       end
       
@@ -133,6 +142,8 @@ module Bolt
 end
 
 # Cucumber hacks
+
+# Load Cucumber requirements
 require 'cucumber'
 begin
   require 'cucumber/rspec_neuter'
@@ -141,9 +152,10 @@ rescue LoadError
 end
 require 'cucumber/cli/main'
 
-module Cucumber
-  module StepMother
+module Cucumber #:nodoc:
+  module StepMother #:nodoc:
     
+    # Clear the step definitions and reload them
     def reload_definitions!
       step_definitions.clear
       Dir['features/step_definitions/*'].map do |f| 
@@ -152,15 +164,17 @@ module Cucumber
       end
     end
     
+    # Clear the steps and scenarios to always start fresh
     def clear_steps_and_scenarios!
       steps.clear
       scenarios.clear
     end  
   end
   
-  module Cli
-    class Main
+  module Cli #:nodoc:
+    class Main #:nodoc:
 
+      # Overwritten execute to create a reference for StepMother
       def self.execute(args)
         instance = new(args)
         instance.execute!(@step_mother)
