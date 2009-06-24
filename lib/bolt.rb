@@ -38,7 +38,7 @@ module Bolt
   
   # check for verbose execution
   def self.verbose?
-    @@config['verbose'] == 'true'
+    @@config['verbose'] == true
   end
   
   # Trap appropriate signals
@@ -106,6 +106,7 @@ module Bolt
     autoload :Base, File.dirname(__FILE__) + '/bolt/runners/base'
     autoload :Cucumber, File.dirname(__FILE__) + '/bolt/runners/cucumber'
     autoload :TestUnit, File.dirname(__FILE__) + '/bolt/runners/test_unit'
+    autoload :LegacyTestUnit, File.dirname(__FILE__) + '/bolt/runners/legacy_test_unit'
     autoload :RSpec, File.dirname(__FILE__) + '/bolt/runners/rspec'
   end
     
