@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'
+require 'test/test_helper.rb' if File.exists?('test/test_helper.rb')
 #
 # Bolt::Runners::TestUnit
 #

@@ -4,7 +4,7 @@ require 'bolt'
 
 # Rails support
 # TODO test/test_helper is not good for checking for rails, try something else
-if File.exists?('test/test_helper.rb')
+if File.exists?('config/environment.rb')
   require 'bolt/adapters/rails'
 end
 

@@ -7,7 +7,7 @@ end
 
 puts '** Rails found, loading environment'
 ENV['RAILS_ENV'] = 'test'
-require 'test/test_helper.rb'
+require 'config/environment.rb'
 
 # This is a hack for Rails Test::Unit to prevent raising errors when a test file is loaded again
 module ActiveSupport

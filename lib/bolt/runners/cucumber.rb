@@ -85,6 +85,8 @@ module Bolt
           when %r:^lib/:
           name = file.sub('.rb', '').sub('lib/', '')
           features = self.models[name]
+          when %r:.feature$:
+            return [file]
           else
           #
         end
