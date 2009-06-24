@@ -53,7 +53,7 @@ module Bolt
       
       def result(filename, results)
         message = results
-        if results.match('example') #rspec
+        if results and results.match('example') #rspec
           if results.match('pending')
             icon = 'pending'
           elsif results.match('0 failures')
@@ -61,9 +61,9 @@ module Bolt
           else
             icon = 'failed'
           end
-        elsif (results.match('0 failures, 0 errors')) # test::unit
+        elsif results and results.match('0 failures, 0 errors') # test::unit
           icon = 'success'
-        elsif (results.match(/([0-9]*) scenario(s*) \([0-9]+ passed\) ([0-9]*) step(s*) \([0-9]+ passed\)/)) # cucumber
+        elsif results and results.match(/([0-9]*) scenario(s*) \([0-9]+ passed\) ([0-9]*) step(s*) \([0-9]+ passed\)/) # cucumber
           icon = 'success'
         else
           icon = 'failed'

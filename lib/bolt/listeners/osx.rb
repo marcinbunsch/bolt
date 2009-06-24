@@ -8,7 +8,7 @@
 module Bolt
   module Listeners
     class Osx
-      
+
       attr_reader :last_check, :callback, :valid_extensions
 
       def initialize(valid_extensions = nil)

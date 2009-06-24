@@ -38,7 +38,16 @@ module Bolt
   
   # check for verbose execution
   def self.verbose?
-    @@config['verbose'] || false
+    @@config['verbose'] == 'true'
+  end
+  
+  # Trap appropriate signals
+  def self.trap_signals
+    # ctrl-c should exit
+    trap 'INT' do
+      $stdout.puts "\n** Exiting Bolt..."
+      exit(0)
+    end
   end
   
   # start bolt
@@ -51,13 +60,21 @@ module Bolt
     # read the arguments passed
     Bolt.read_argv
     
-    Bolt::Listener.new
+    # trap signals
+    Bolt.trap_signals
+    
+    listener = Bolt::Listener.new
+    
+    # display info to user
+    listener.selected.notifier.info 'Bolt running', "Bolt is enabled and running in #{Dir.pwd}"
+    
+    # if in Rails, start environment
+    listener.selected.start
   end
-  
-  autoload :Mapper, 'bolt/mapper'
-  autoload :Runner, 'bolt/runner'
-  autoload :Notifier, 'bolt/notifier'
-  autoload :Listener, 'bolt/listener'
+
+  autoload :Runner, File.dirname(__FILE__) + '/bolt/runner'
+  autoload :Notifier, File.dirname(__FILE__) + '/bolt/notifier'
+  autoload :Listener, File.dirname(__FILE__) + '/bolt/listener'
   
   #
   # Bolt::Listeners
@@ -65,9 +82,9 @@ module Bolt
   # Wrapper for specific listeners
   #
   module Listeners
-    autoload :Generic, 'bolt/listeners/generic'
-    autoload :Kqueue, 'bolt/listeners/kqueue'
-    autoload :Osx, 'bolt/listeners/osx'
+    autoload :Generic, File.dirname(__FILE__) + '/bolt/listeners/generic'
+    autoload :Kqueue, File.dirname(__FILE__) + '/bolt/listeners/kqueue'
+    autoload :Osx, File.dirname(__FILE__) + '/bolt/listeners/osx'
   end
   
   #
@@ -86,10 +103,10 @@ module Bolt
       @@noticed_files
     end
     
-    autoload :Base, 'bolt/runners/base'
-    autoload :Cucumber, 'bolt/runners/cucumber'
-    autoload :TestUnit, 'bolt/runners/test_unit'
-    autoload :RSpec, 'bolt/runners/rspec'
+    autoload :Base, File.dirname(__FILE__) + '/bolt/runners/base'
+    autoload :Cucumber, File.dirname(__FILE__) + '/bolt/runners/cucumber'
+    autoload :TestUnit, File.dirname(__FILE__) + '/bolt/runners/test_unit'
+    autoload :RSpec, File.dirname(__FILE__) + '/bolt/runners/rspec'
   end
     
   #
@@ -98,8 +115,8 @@ module Bolt
   # Wrapper for specific notifier
   #
   module Notifiers
-    autoload :Generic, 'bolt/notifiers/generic'
-    autoload :Growl, 'bolt/notifiers/growl'
-    autoload :NotifyOsd, 'bolt/notifiers/notify_osd'
+    autoload :Generic, File.dirname(__FILE__) + '/bolt/notifiers/generic'
+    autoload :Growl, File.dirname(__FILE__) + '/bolt/notifiers/growl'
+    autoload :NotifyOsd, File.dirname(__FILE__) + '/bolt/notifiers/notify_osd'
   end
 end

@@ -69,8 +69,22 @@ module Bolt
 
         # refresh the loaded test file
         $".delete(file)
-        require file
-        
+        begin
+          require file
+        rescue LoadError
+          notifier.error("Error in #{file}", $!)
+          puts $!
+          return
+        rescue ArgumentError
+          notifier.error("Error in #{file}", $!)
+          puts $!
+          return
+        rescue SyntaxError
+          notifier.error("Error in #{file}", $!)
+          puts $!
+          return
+        end
+                
         # run the tests in the Spec::Runner
         ::Spec::Runner::CommandLine.run
         

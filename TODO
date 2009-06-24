@@ -1,0 +1,3 @@
+write specs!! :)
+move elements of Listener#new to Bolt.start
+move Listener#add_sigint_handler to Bolt.add_sigint_handler
