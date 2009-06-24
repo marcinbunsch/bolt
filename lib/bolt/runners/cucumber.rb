@@ -134,7 +134,11 @@ end
 
 # Cucumber hacks
 require 'cucumber'
-require 'cucumber/rspec_neuter'
+begin
+  require 'cucumber/rspec_neuter'
+rescue LoadError
+  puts '** ERROR: Could not load cucumber/rspec_neuter' if Bolt.verbose?
+end
 require 'cucumber/cli/main'
 
 module Cucumber

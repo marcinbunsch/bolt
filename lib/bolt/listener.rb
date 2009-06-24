@@ -14,7 +14,7 @@ module Bolt
       # find appropriate listener
       listener
       
-      $stdout.puts "** Using #{listener.class} " if Bolt['verbose']
+      $stdout.puts "** Using #{listener.class} " if Bolt.verbose?
       
       # trap the INT signal 
       add_sigint_handler
@@ -59,11 +59,11 @@ module Bolt
       if Bolt['listener'] and ['generic', 'osx'].include?(Bolt['listener'])
         self.selected= Bolt::Listeners::Generic.new if Bolt['listener'] == 'generic'
         self.selected= Bolt::Listeners::Osx.new if Bolt['listener'] == 'osx'
-        $stdout.puts "** Found listener setting in .bolt" if Bolt['verbose']
+        $stdout.puts "** Found listener setting in .bolt" if Bolt.verbose?
         return self.selected
       end
         
-      $stdout.puts "** Determining listener..." if Bolt['verbose']
+      $stdout.puts "** Determining listener..." if Bolt.verbose?
       
       # TODO: os identification via RUBY_PLATFORM is flawed as it will return 'java' in jruby. Look for a different solution
       os_string = RUBY_PLATFORM.downcase

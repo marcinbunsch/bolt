@@ -67,7 +67,7 @@ module Bolt
           candidates << test_filename
         end
         if candidates == []
-          puts "=> NOTICE: could not find test file for: #{file}" if Bolt['verbose']
+          puts "=> NOTICE: could not find test file for: #{file}" if Bolt.verbose?
         end
         # puts candidates.inspect
         candidates

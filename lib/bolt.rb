@@ -23,19 +23,25 @@ module Bolt
   # read the .bolt file for configuration
   def self.read_dotfile
     if File.exists?('.bolt')
-      $stdout.puts "** Found .bolt file" if Bolt['verbose']
-      read = YAML.load_file('.bolt')
-      @@config.merge!(read) if read
+      parsed_dotfile = YAML.load_file('.bolt')
+      @@config.merge!(parsed_dotfile) if parsed_dotfile
+      $stdout.puts "** Found .bolt file" if Bolt.verbose?
     end
   end
   
   # read the arguments passed in cli
   def self.read_argv
     ARGV.each do |arg|
-      self['verbose'] = true if arg == '-v'
+      @@config['verbose'] = true if arg == '-v'
     end
   end
   
+  # check for verbose execution
+  def self.verbose?
+    @@config['verbose'] || false
+  end
+  
+  # start bolt
   def self.start
     $stdout.puts "** Starting Bolt..."
     

@@ -9,19 +9,22 @@ module Bolt
     class Generic
       attr_accessor :files, :interval, :busy, :notifier, :parent, :mappings
       
+      # constructor
       def initialize
         self.interval = 1 # decrease the CPU load by increasing the interval
         self.busy     = false
       end 
       
+      # find files and start the listener
       def start
-        puts "** #{self.class} is scanning for files... " if Bolt['verbose']
+        puts "** #{self.class} is scanning for files... " if Bolt.verbose?
         # build a file collection
         find_files
         puts "** #{self.class} watching #{files.size} files... "
         wait  
       end
       
+      # wait for a specified interval and check files for changes
       # source: ZenTest/autotest.rb
       def wait
         Kernel.sleep self.interval until check_files
@@ -32,12 +35,20 @@ module Bolt
         return if busy # if working on something already, skip the iteration
         updated = []
         files.each do |filename, mtime| 
-          current_mtime = File.stat(filename).mtime
+          begin
+            current_mtime = File.stat(filename).mtime
+          rescue Errno::ENOENT
+            # file was not found and was probably deleted
+            # remove the file from the file list 
+            files.delete(filename)
+            puts "=> ERROR: #{filename} not found, ignoring" if Bolt.verbose?
+            next
+          end
           if current_mtime != mtime  
             updated << filename
             # update the mtime in file registry so we it's only send once
             files[filename] = current_mtime
-            $stdout.puts ">> Spotted change in #{filename}" if Bolt['verbose']
+            $stdout.puts ">> Spotted change in #{filename}" if Bolt.verbose?
           end
         end
         parent.handle(updated) if updated != []
@@ -60,7 +71,8 @@ module Bolt
             next if in_mappings.nil?
             next if test ?d, f
             next if f =~ /(swp|~|rej|orig)$/ # temporary/patch files
-            next if f =~ /\/\.?#/            # Emacs autosave/cvs merge files
+            next if f =~ /(\.svn|\.git)$/ # subversion/git
+            next if f =~ /\/\.?#/ # Emacs autosave/cvs merge files
 
             filename = f.sub(/^\.\//, '')
             

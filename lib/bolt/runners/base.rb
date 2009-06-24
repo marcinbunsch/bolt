@@ -24,7 +24,7 @@ module Bolt
         
         reload filename
         
-        puts "=> #{self.class} running test for #{filename}" if Bolt['verbose']
+        puts "=> #{self.class} running test for #{filename}" if Bolt.verbose?
         test_files = translate(filename)
         
         return if test_files == []
