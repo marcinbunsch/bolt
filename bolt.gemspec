@@ -40,8 +40,10 @@ Gem::Specification.new do |s|
      "lib/bolt/runners/cucumber.rb",
      "lib/bolt/runners/rspec.rb",
      "lib/bolt/runners/test_unit.rb",
+     "spec/bolt/listener_spec.rb",
      "spec/bolt/runners/rspec_spec.rb",
-     "spec/bolt/runners/test_unit_spec.rb"
+     "spec/bolt/runners/test_unit_spec.rb",
+     "spec/bolt_spec.rb"
   ]
   s.homepage = %q{http://github.com/marcinbunsch/bolt}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -49,8 +51,10 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.3}
   s.summary = %q{Bolt is a merge of autotest, mislav/rspactor and rails_server_testing to produce a lightning fast, configurable and simple to set up autotest clone}
   s.test_files = [
-    "spec/bolt/runners/rspec_spec.rb",
-     "spec/bolt/runners/test_unit_spec.rb"
+    "spec/bolt/listener_spec.rb",
+     "spec/bolt/runners/rspec_spec.rb",
+     "spec/bolt/runners/test_unit_spec.rb",
+     "spec/bolt_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
