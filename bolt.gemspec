@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bolt}
-  s.version = "0.2.7"
+  s.version = "0.2.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcin Bunsch"]
-  s.date = %q{2009-06-24}
+  s.date = %q{2009-06-26}
   s.default_executable = %q{bolt}
   s.email = %q{marcin@applicake.com}
   s.executables = ["bolt"]
@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
      "lib/bolt/runner.rb",
      "lib/bolt/runners/base.rb",
      "lib/bolt/runners/cucumber.rb",
+     "lib/bolt/runners/legacy_test_unit.rb",
      "lib/bolt/runners/rspec.rb",
      "lib/bolt/runners/test_unit.rb",
      "spec/bolt/listener_spec.rb",

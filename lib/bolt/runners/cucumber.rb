@@ -78,6 +78,8 @@ module Bolt
       def translate(file)
         self.heard = file
                 
+        puts file
+        
         case file
           when %r:^app/controllers/:
           name = file.sub('_controller.rb', '').sub('app/controllers/', '')
@@ -95,7 +97,14 @@ module Bolt
           features = self.models[name]
           when %r:.feature$:
             return [file]
+          when %r:steps.rb$:
+            if Bolt::Runners::Cucumber.mother
+              puts '=> reloading step definitions'
+              Bolt::Runners::Cucumber.mother.reload_definitions! 
+            end
+            features = [file.gsub('features/step_definitions/', '').gsub('_steps.rb', '')]
           else
+            
           #
         end
         
@@ -116,7 +125,10 @@ module Bolt
         #$".delete(file)
         #require file
 
-        Bolt::Runners::Cucumber.mother.reload_definitions! if Bolt::Runners::Cucumber.mother and self.heard.match('_steps.rb')
+        if Bolt::Runners::Cucumber.mother and self.heard.match('_steps.rb')
+          #puts '=> reloading step definitions'
+          #Bolt::Runners::Cucumber.mother.reload_definitions! 
+        end
         
         ::Cucumber::Cli::Main.execute(features)
 
@@ -129,8 +141,11 @@ module Bolt
         # send buffer to stdout
         puts result
         
+        if result.include?('You can implement step definitions')
+          result = result.split('You can implement step definitions').first
+        end
         last_three = result.split("\n")[-3..-1].join(' ')
-        last_three = last_three.gsub("\e[32m", '').gsub("\e[0m", '').gsub("\e[36m", '').gsub("\e[31m", '') # get ri of the color codes
+        last_three = last_three.gsub("\e[32m", '').gsub("\e[0m", '').gsub("\e[36m", '').gsub("\e[31m", '').gsub("\e[33m", '') # get ri of the color codes
         
         # sent result to notifier
         notifier.result(features.join(' '), last_three)
@@ -142,6 +157,8 @@ module Bolt
 end
 
 # Cucumber hacks
+# =======
+# Below you will find hacks of cucumber which allow bolt to work
 
 # Load Cucumber requirements
 require 'cucumber'
@@ -150,6 +167,7 @@ begin
 rescue LoadError
   puts '** ERROR: Could not load cucumber/rspec_neuter' if Bolt.verbose?
 end
+require 'cucumber/version'
 require 'cucumber/cli/main'
 
 module Cucumber #:nodoc:
@@ -182,6 +200,36 @@ module Cucumber #:nodoc:
         instance
       end
       
+    end
+  end
+end
+
+if Cucumber::VERSION::STRING=='0.3.3'
+  # this applies only to cucumber 0.3.3
+  # it prevents cucumber from exiting when features fail
+  module Cucumber #:nodoc:
+    module Cli #:nodoc:
+      class Main #:nodoc:
+        def execute!(step_mother)
+          configuration.load_language
+          step_mother.options = configuration.options
+
+          require_files
+          enable_diffing
+        
+          features = load_plain_text_features
+
+          visitor = configuration.build_formatter_broadcaster(step_mother)
+          step_mother.visitor = visitor # Needed to support World#announce
+          visitor.visit_features(features)
+
+          failure = step_mother.steps(:failed).any? || 
+            (configuration.strict? && step_mother.steps(:undefined).any?)
+
+          # do not exit!!!!!!
+          # Kernel.exit(failure ? 1 : 0)
+        end
+      end
     end
   end
 end
