@@ -42,7 +42,7 @@ module Bolt
         else
           Bolt['feature_map'].each do |feature, map|
             # controllers
-            if map["controllers"].include?(',')
+            if map["controllers"] and map["controllers"].include?(',')
               map["controllers"].split(',').each { |controller| 
                 name = controller.strip     
                 self.controllers[name] = [] if !self.controllers[name]
@@ -55,7 +55,7 @@ module Bolt
             end
             
             # models
-            if map["models"].include?(',')
+            if map["models"] and map["models"].include?(',')
               map["models"].split(',').each { |model| 
                 name = model.strip     
                 self.models[name] = [] if !self.models[name]
@@ -77,9 +77,7 @@ module Bolt
       #
       def translate(file)
         self.heard = file
-                
-        puts file
-        
+                        
         case file
           when %r:^app/controllers/:
           name = file.sub('_controller.rb', '').sub('app/controllers/', '')
