@@ -1,3 +1,5 @@
+*NOTE:* Bolt is currently an experiment, so don't expect magic from it yet :) It might crash at any time. If it does not work for you, please report an issue at http://github.com/marcinbunsch/bolt/issues with a description of the error and a stack trace (if possible). Thanks!
+
 h1. Bolt - fast autotest alternative
 
 Welcome to Bolt!
