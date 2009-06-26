@@ -1,6 +1,5 @@
 require 'spec'
 require 'stringio'
-require 'spec/spec_helper.rb' if File.exists?('spec/spec_helper.rb')
 
 #
 # Bolt::Runners::Rspec

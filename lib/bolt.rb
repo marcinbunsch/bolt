@@ -2,6 +2,18 @@ require 'yaml'
 # Why Bolt? Cause it's a cool name, that's why :)
 module Bolt
   
+  @@listener = nil
+  
+  # Attr writer for Listener
+  def self.listener=(listener)
+    @@listener = listener
+  end
+  
+  # Attr reader for Listener
+  def self.listener
+    @@listener
+  end
+  
   # static location for settings
   @@config = {}
   
@@ -50,8 +62,8 @@ module Bolt
     end
   end
   
-  # start bolt
-  def self.start
+  # load all bolt required files
+  def self.load
     $stdout.puts "** Starting Bolt..."
     
     # read the dotfile
@@ -63,13 +75,19 @@ module Bolt
     # trap signals
     Bolt.trap_signals
     
-    listener = Bolt::Listener.new
+
+  end
+  
+  # start bolt
+  def self.start
+
+    self.listener= Bolt::Listener.new
     
     # display info to user
-    listener.selected.notifier.info 'Bolt running', "Bolt is enabled and running in #{Dir.pwd}"
+    self.listener.selected.notifier.info 'Bolt running', "Bolt is enabled and running in #{Dir.pwd}"
     
     # if in Rails, start environment
-    listener.selected.start
+    self.listener.selected.start
   end
 
   autoload :Runner, File.dirname(__FILE__) + '/bolt/runner'

@@ -2,12 +2,14 @@
 require 'rubygems'
 require 'bolt'
 
+# load all files
+Bolt.load
+
 # Rails support
 # TODO test/test_helper is not good for checking for rails, try something else
 if File.exists?('config/environment.rb')
   require 'bolt/adapters/rails'
 end
 
-      
 # start ## that must be the worst comment ever
 Bolt.start

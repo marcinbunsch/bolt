@@ -5,9 +5,22 @@ module Bolt #:nodoc:
   end
 end
 
-puts '** Rails found, loading environment'
+puts '** Rails found, loading adapter'
 ENV['RAILS_ENV'] = 'test'
-require 'config/environment.rb'
+
+# the environment has to be loaded here or we end up with a stack level too deep error
+case Bolt::Runner.pick
+  when 'test_unit'
+    require 'test/test_helper'
+  when 'legacy_test_unit'
+    require 'test/test_helper'
+  when 'rspec'
+    require 'spec/spec_helper'
+  when 'cucumber'
+    require 'config/environment.rb'
+  else
+    # ??
+end
 
 # This is a hack for Rails Test::Unit to prevent raising errors when a test file is loaded again
 module ActiveSupport #:nodoc:    
