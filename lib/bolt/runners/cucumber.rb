@@ -128,8 +128,22 @@ module Bolt
           #Bolt::Runners::Cucumber.mother.reload_definitions! 
         end
         
-        ::Cucumber::Cli::Main.execute(features)
-
+        begin
+          ::Cucumber::Cli::Main.execute(features)
+        rescue
+          result = io.string.to_s.dup
+          $stdout = old
+          
+          # send buffer to stdout
+          puts result
+          
+          notifier.error("#{$!.class} in Cucumber", "Cucumber has reported an error during execution. Please see the consol output for more information.")
+         
+          puts $!.message
+          puts $!.backtrace
+          return
+        end
+        
         Bolt::Runners::Cucumber.mother.clear_steps_and_scenarios!
         # read the buffer
         result = io.string.to_s.dup
