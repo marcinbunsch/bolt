@@ -53,11 +53,42 @@ module Bolt
     @@config['verbose'] == true
   end
   
+  # static location for settings
+  @@rcov_analyzer = ::Rcov::CodeCoverageAnalyzer.new
+  
+  @@frozen_rcov_analyzer = nil
+  
+  def self.start_rcov
+    @@rcov_analyzer = ::Rcov::CodeCoverageAnalyzer.new
+  end
+  
+  def self.analyzer
+    return @@frozen_rcov_analyzer if @@frozen_rcov_analyzer
+    @@rcov_analyzer
+  end
+  
+  def self.freeze_analyzer
+    @@frozen_rcov_analyzer = analyzer
+  end
+  
+  def self.dump_rcov(duped_analyzer = nil)
+    chosen_analyzer = duped_analyzer || analyzer
+    chosen_analyzer.analyzed_files.each do |file |
+      next if !file.match('video.rb')
+      lines, marked_info, count_info = analyzer.data(file)
+      marked = marked_info.collect { |line| if line == false then nil else line end }.compact
+      #puts file.to_s + ' - ' + marked.size.to_s + '/' + lines.size.to_s    
+      stats = ::Rcov::FileStatistics.new(file, lines, count_info)
+      puts file.to_s + ' - ' + stats.total_coverage.to_s
+    end
+  end
+  
   # Trap appropriate signals
   def self.trap_signals
     # ctrl-c should exit
     trap 'INT' do
       $stdout.puts "\n** Exiting Bolt..."
+      #Bolt.dump_rcov
       exit(0)
     end
   end

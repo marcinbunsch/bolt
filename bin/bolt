@@ -1,15 +1,23 @@
 #!/usr/bin/env ruby
 require 'rubygems'
+require 'rcov'
 require 'bolt'
 
 # load all files
 Bolt.load
 
+
+
+
 # Rails support
 # TODO test/test_helper is not good for checking for rails, try something else
 if File.exists?('config/environment.rb')
-  require 'bolt/adapters/rails'
+  Bolt.analyzer.run_hooked do
+    require 'bolt/adapters/rails'
+  end
+  Bolt.freeze_analyzer
 end
 
+
 # start ## that must be the worst comment ever
-Bolt.start
+  Bolt.start

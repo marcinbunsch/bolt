@@ -22,6 +22,10 @@ module Bolt
       # handle an updated file
       def handle(filename)
         
+        analyzer = Bolt.analyzer
+        analyzer.reset
+        analyzer.run_hooked do
+          
         reload filename
         
         puts "=> #{self.class} running test for #{filename}" if Bolt.verbose?
@@ -30,8 +34,15 @@ module Bolt
         return if test_files == []
         
         puts "==== #{self.class} running: #{ test_files.join(', ')}  ===="
-                
-        run(test_files)
+
+
+        
+          run(test_files)
+        
+        end
+        
+        Bolt.dump_rcov(analyzer)
+        
         
         puts "==== #{self.class} completed run ===="
         
