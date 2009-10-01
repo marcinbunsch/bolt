@@ -11,10 +11,10 @@ module Bolt
     class RSpec < Bolt::Runners::Base
       
       # mappings define which folders hold the files that the listener should listen to
-      MAPPINGS =  /(\.\/app\/|\.\/lib\/|\.\/spec\/controllers|\.\/spec\/models|\.\/spec)/
+      MAPPINGS =  /(\.\/app\/|\.\/lib\/|\.\/spec\/controllers|\.\/spec\/models|\.\/spec\/helpers|\.\/spec)/
       
       # class map specifies the folders holding classes that can be reloaded
-      CLASS_MAP = /(app\/controllers\/|app\/models\/|lib\/)/
+      CLASS_MAP = /(app\/controllers\/|app\/models\/|app\/helpers\/|lib\/)/
       
       # accesors
       attr_accessor :notifier, :test_io
@@ -30,6 +30,8 @@ module Bolt
             test_filename = file.sub('.rb', '_spec.rb').sub('app/controllers', 'spec/controllers')
           when %r:^app/models/:
             test_filename = "spec/models/#{basename.sub('.rb', '_spec.rb')}"
+          when %r:^app/helpers/:
+            test_filename = "spec/helpers/#{basename.sub('.rb', '_spec.rb')}"
           when %r:^app/views/:
             file = file.sub('app/views/', '')
             directory = file.split('/')[0..-2].compact.join('/')
@@ -101,6 +103,7 @@ module Bolt
         
         # sent result to notifier
         notifier.result(file, result.split("\n").compact.last)
+        
         
       end
       
