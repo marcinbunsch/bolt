@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "bolt"
-    gem.summary = %q{Bolt is a merge of autotest, mislav/rspactor and rails_server_testing to produce a lightning fast, configurable and simple to set up autotest clone}
+    gem.summary = %q{Bolt is a merge of autotest, mislav/rspactor and rails_server_testing to produce a lightning fast, configurable and simple to set up autotest clone.}
     gem.authors = ["Marcin Bunsch"]
     gem.email = "marcin@applicake.com"
     gem.homepage = "http://github.com/marcinbunsch/bolt"

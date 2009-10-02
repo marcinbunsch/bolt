@@ -51,7 +51,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.3}
-  s.summary = %q{Bolt is a merge of autotest, mislav/rspactor and rails_server_testing to produce a lightning fast, configurable and simple to set up autotest clone}
+  s.summary = %q{Bolt is a merge of autotest, mislav/rspactor and rails_server_testing to produce a lightning fast, configurable and simple to set up autotest clone.}
   s.test_files = [
     "spec/bolt/listener_spec.rb",
      "spec/bolt/runners/cucumber_spec.rb",
