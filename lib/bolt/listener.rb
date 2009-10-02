@@ -65,7 +65,7 @@ module Bolt
       os_string = os
 
       self.selected= Bolt::Listeners::Generic.new      
-      self.selected= Bolt::Listeners::Osx.start if os_string.include?("darwin")
+      # self.selected= Bolt::Listeners::Osx.start if os_string.include?("darwin")
       # TODO:
       # self.selected= Bolt::Listeners::Windows.new if os_string.include?("mswin")
       # self.selected= Bolt::Listeners::Linux.new if os_string.include?("linux")

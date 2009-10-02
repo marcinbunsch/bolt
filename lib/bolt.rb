@@ -101,7 +101,7 @@ module Bolt
   #
   module Listeners
     autoload :Generic, File.dirname(__FILE__) + '/bolt/listeners/generic'
-    autoload :Kqueue, File.dirname(__FILE__) + '/bolt/listeners/kqueue'
+    # autoload :Kqueue, File.dirname(__FILE__) + '/bolt/listeners/kqueue'
     autoload :Osx, File.dirname(__FILE__) + '/bolt/listeners/osx'
   end
   

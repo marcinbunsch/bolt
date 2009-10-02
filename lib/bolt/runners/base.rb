@@ -98,6 +98,9 @@ module Bolt
           rescue ArgumentError
             notifier.error("Error in #{filename}", $!)
             return false
+          rescue SyntaxError
+            notifier.error("Error in #{filename}", $!)
+            return false
           end
         end
       end
