@@ -50,7 +50,7 @@ module Bolt
   
   # check for verbose execution
   def self.verbose?
-    @@config['verbose'] == true
+    @@config['verbose'] == 'true'
   end
   
   # Trap appropriate signals

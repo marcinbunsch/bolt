@@ -22,19 +22,19 @@ module Bolt
       # handle an updated file
       def handle(filename)
         
-        reload filename
         
         puts "=> #{self.class} running test for #{filename}" if Bolt.verbose?
-        test_files = translate(filename)
+              
+        if reload(filename)
+          test_files = translate(filename)  
+          return if test_files == []
         
-        return if test_files == []
-        
-        puts "==== #{self.class} running: #{ test_files.join(', ')}  ===="
+          puts "==== #{self.class} running: #{ test_files.join(', ')}  ===="
                 
-        run(test_files)
+          run(test_files)
         
-        puts "==== #{self.class} completed run ===="
-        
+          puts "==== #{self.class} completed run ===="
+        end
       end
       
       # translate the filename into a test
@@ -69,6 +69,8 @@ module Bolt
           return eval(klassname)
         rescue NameError
           return false
+        rescue SyntaxError
+          return false
         end
       end
       
@@ -100,9 +102,12 @@ module Bolt
             return false
           rescue SyntaxError
             notifier.error("Error in #{filename}", $!)
+            puts $!
+            puts $!.backtrace.first
             return false
           end
         end
+        true
       end
       
       # force reload of a file/class
