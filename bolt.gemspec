@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bolt}
-  s.version = "0.2.8"
+  s.version = "0.2.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcin Bunsch"]
-  s.date = %q{2009-06-26}
+  s.date = %q{2009-10-02}
   s.default_executable = %q{bolt}
   s.email = %q{marcin@applicake.com}
   s.executables = ["bolt"]
@@ -42,6 +42,7 @@ Gem::Specification.new do |s|
      "lib/bolt/runners/rspec.rb",
      "lib/bolt/runners/test_unit.rb",
      "spec/bolt/listener_spec.rb",
+     "spec/bolt/runners/cucumber_spec.rb",
      "spec/bolt/runners/rspec_spec.rb",
      "spec/bolt/runners/test_unit_spec.rb",
      "spec/bolt_spec.rb"
@@ -53,6 +54,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Bolt is a merge of autotest, mislav/rspactor and rails_server_testing to produce a lightning fast, configurable and simple to set up autotest clone}
   s.test_files = [
     "spec/bolt/listener_spec.rb",
+     "spec/bolt/runners/cucumber_spec.rb",
      "spec/bolt/runners/rspec_spec.rb",
      "spec/bolt/runners/test_unit_spec.rb",
      "spec/bolt_spec.rb"
