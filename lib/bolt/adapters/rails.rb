@@ -7,8 +7,7 @@ end
 
 puts '** Rails found, loading adapter'
 ENV['RAILS_ENV'] = 'test'
-# make sure the rails root is to the dir we're working in
-RAILS_ROOT = ENV['PWD'] if !defined?(RAILS_ROOT)
+
 # the environment has to be loaded here or we end up with a stack level too deep error
 case Bolt::Runner.pick
   when 'test_unit'
