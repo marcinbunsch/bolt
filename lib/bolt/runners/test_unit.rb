@@ -90,6 +90,12 @@ module Bolt
           eval "module ::#{part}; end" if !part.match('Test')
         end
         
+        begin 
+          clear_class(test_class.constantize) 
+        rescue NameError  
+  
+        end
+              
         # TODO: make this reload use load_file
         $".delete(file)
         

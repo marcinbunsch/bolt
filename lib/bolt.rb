@@ -1,4 +1,7 @@
 require 'yaml'
+# load the array extension 
+File.dirname(__FILE__) + '/bolt/ext/core/array'
+
 # Why Bolt? Cause it's a cool name, that's why :)
 module Bolt
   

@@ -76,20 +76,27 @@ module Bolt
       
       # clear the class of methods before reload
       def clear_class(klass)
-        begin
-          klass.instance_methods.each do |m| 
-            next if m.to_s == '__id__'
-            next if m.to_s == '__send__'
+        #begin
+          # remove all constants
+          klass.constants.each do |const| 
+            begin
+              klass.send(:remove_const, const)
+            rescue
+            end
+          end
+          # only remove methods defined in that class
+          (klass.instance_methods - klass.superclass.instance_methods).each do |m| 
             begin
               klass.send(:remove_method, m)
             rescue
             end
           end
-        rescue NameError
-        end
+        #rescue NameError
+        #end
       end
       
       def load_file(filename)
+
         # load file again to rebuild the class we just ripped apart
         if filename.match(self.class::CLASS_MAP)
           begin
