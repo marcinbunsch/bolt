@@ -30,10 +30,6 @@ class FooTestClass
 end
 
 describe Array do
-
-  before :each do
-    FooTestClass.clear_results
-  end
   
   it 'should call method for each element of the array' do
     results = [FooTestClass.new, FooTestClass.new, FooTestClass.new].invoke :test_method
@@ -45,9 +41,33 @@ describe Array do
     results.should == [2, 2, 2]
   end
   
+  it 'should call method with one argument as a hash for each element of the array' do
+    results = [FooTestClass.new, FooTestClass.new, FooTestClass.new].invoke(:test_method_with_one_arg, :foo => 1, :boo => 2)
+    results.first.class.should == Hash
+    results.first.keys.should include(:foo)
+    results.first.keys.should include(:boo)
+    results.first[:foo].should == 1
+    results.first[:boo].should == 2
+    results.first.should == results[1]
+    results.first.should == results[2]
+  end
+  
   it 'should call method with two arguments for each element of the array' do
     results = [FooTestClass.new, FooTestClass.new, FooTestClass.new].invoke :test_method_with_two_args, 2, 3
     results.should == [[2, 3], [2, 3], [2, 3]]
+  end
+  
+  it 'should call method with two arguments and one as a hash for each element of the array' do
+    results = [FooTestClass.new, FooTestClass.new, FooTestClass.new].invoke(:test_method_with_two_args, 1, :foo => 1, :boo => 2, :goo => 3)
+    results.first.last.class.should == Hash
+    results.first.last.keys.should include(:foo)
+    results.first.last.keys.should include(:boo)
+    results.first.last.keys.should include(:goo)
+    results.first.last[:foo].should == 1
+    results.first.last[:boo].should == 2
+    results.first.last[:goo].should == 3
+    results.first.should == results[1]
+    results.first.should == results[2]
   end
   
   it 'should call method with a block for each element of the array' do
