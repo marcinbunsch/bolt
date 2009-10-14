@@ -9,17 +9,26 @@ puts '** Rails found, loading adapter'
 ENV['RAILS_ENV'] = 'test'
 
 # the environment has to be loaded here or we end up with a stack level too deep error
-case Bolt::Runner.pick
-  when 'test_unit'
-    require 'test/test_helper'
-  when 'legacy_test_unit'
-    require 'test/test_helper'
-  when 'rspec'
-    require 'spec/spec_helper'
-  when 'cucumber'
-    require 'config/environment.rb'
-  else
-    # ??
+begin
+  case Bolt::Runner.pick
+    when 'test_unit'
+      require 'test/test_helper'
+    when 'legacy_test_unit'
+      require 'test/test_helper'
+    when 'rspec'
+      require 'spec/spec_helper'
+    when 'cucumber'
+      require 'config/environment.rb'
+    else
+      # ??
+  end
+rescue
+  # if rails fails to load env, supply the user with a helpful message
+  $stdout.puts "** ERROR - could not load Rails environment"
+  $stdout.puts "** REASON: #{$!.class}: #{$!.message}"
+  $stdout.puts "#{$!.backtrace.join("\n")}"
+  $stdout.puts "===\n** Bolt was unable to load the Rails environment. Above is a description of the error that prevented Bolt from starting"
+  exit(1)
 end
 
 # This is a hack for Rails Test::Unit to prevent raising errors when a test file is loaded again
