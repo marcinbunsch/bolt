@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bolt}
-  s.version = "0.2.13"
+  s.version = "0.2.14"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcin Bunsch"]
@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
      "lib/bolt/runners/base.rb",
      "lib/bolt/runners/cucumber.rb",
      "lib/bolt/runners/legacy_test_unit.rb",
+     "lib/bolt/runners/mixed.rb",
      "lib/bolt/runners/rspec.rb",
      "lib/bolt/runners/test_unit.rb",
      "spec/bolt/ext/core/array_spec.rb",
@@ -63,7 +64,8 @@ Gem::Specification.new do |s|
      "spec/bolt/runners/cucumber_spec.rb",
      "spec/bolt/runners/rspec_spec.rb",
      "spec/bolt/runners/test_unit_spec.rb",
-     "spec/bolt_spec.rb"
+     "spec/bolt_spec.rb",
+     "test/unit/bolt/ext/core/array_test.rb"
   ]
 
   if s.respond_to? :specification_version then
