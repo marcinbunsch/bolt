@@ -1,26 +1,26 @@
 #
 # Bolt::Listeners::OSX
 #
-# OSX-specific Listener, using solution taken from mislav/rspactor listener.rb
+# Mac OS X-specific Listener, using solution taken from mislav/rspactor listener.rb
 #
-# TODO: I have Mac OS X 10.4 and this works only in OS X 10.5. Which means I haven't been able to test it and adapt it.
+# Requires Mac OS X Leopard or higher with RubyCocoa installed (it's installed by default)
 #
 module Bolt
   module Listeners
     class Osx
 
       attr_reader :last_check, :callback, :valid_extensions
+      attr_accessor :notifier, :mappings, :parent
 
       def initialize(valid_extensions = nil)
         @valid_extensions = %w(rb erb builder haml rhtml rxml yml conf opts)
         timestamp_checked
 
         @callback = lambda do |stream, ctx, num_events, paths, marks, event_ids|
-          changed_files = extract_changed_files_from_paths(split_paths(paths, num_events))
+          updated = extract_changed_files_from_paths(split_paths(paths, num_events))
           timestamp_checked
-          yield changed_files unless changed_files.empty?
+          parent.handle(updated) if updated != []
         end
-        run(Dir.pwd)
       end
       
       def self.start
@@ -40,11 +40,11 @@ module Bolt
         end
       end
 
-      def run(directories)
+      def start(directories = Dir.pwd)
         dirs = Array(directories)
         stream = OSX::FSEventStreamCreate(OSX::KCFAllocatorDefault, callback, nil, dirs, OSX::KFSEventStreamEventIdSinceNow, 0.5, 0)
         unless stream
-          $stderr.puts "Failed to create stream"
+          $stderr.puts "** Failed to create stream in Bolt::Listeners::Osx. Exiting"
           exit(1)
         end
 
@@ -80,7 +80,10 @@ module Bolt
           next if ignore_path?(path)
           Dir.glob(path + "*").each do |file|
             next if ignore_file?(file)
-            changed_files << file if file_changed?(file)
+            if file_changed?(file)
+              file.gsub!(Dir.pwd + '/', '')
+              changed_files << file 
+            end
           end
         end
         changed_files
