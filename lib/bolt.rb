@@ -127,6 +127,8 @@ module Bolt
     autoload :TestUnit, File.dirname(__FILE__) + '/bolt/runners/test_unit'
     autoload :LegacyTestUnit, File.dirname(__FILE__) + '/bolt/runners/legacy_test_unit'
     autoload :RSpec, File.dirname(__FILE__) + '/bolt/runners/rspec'
+    autoload :Mixed, File.dirname(__FILE__) + '/bolt/runners/mixed'
+    
   end
     
   #

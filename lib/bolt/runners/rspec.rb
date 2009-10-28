@@ -21,7 +21,7 @@ module Bolt
       
       # mapping is a copied and modified version of mislav/rspactor Inspector#translate
       def translate(file)
-        
+        file = file.first if (file.is_a?(Array))
         basename = File.basename(file)
         candidates = []
         test_filename = nil

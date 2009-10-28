@@ -22,7 +22,7 @@ module Bolt
         return Bolt['runner']
       end      
       $stdout.puts "** Determining runner... \n" if Bolt.verbose?
-      return 'rspec'  if File.directory?('spec')
+      return 'mixed'  if File.directory?('spec')
       'test_unit'
     end
     
@@ -35,6 +35,7 @@ module Bolt
       self.selected= Bolt::Runners::TestUnit.new if picked == 'test_unit'
       self.selected= Bolt::Runners::RSpec.new if picked == 'rspec'
       self.selected= Bolt::Runners::Cucumber.new if picked == 'cucumber'
+      self.selected= Bolt::Runners::Mixed.new if picked == 'mixed'
       self.selected
     end
     
